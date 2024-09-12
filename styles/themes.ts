@@ -1,52 +1,52 @@
-const primary = "#50E2F1" as const;
+const primary = '#50E2F1' as const
 
 const lightPalette = [
-  "#FFFFFF",
-  "#F2F2F2",
-  "#E6E6E6",
-  "#D9D9D9",
-  "#CCCCCC",
-  "#BFBFBF",
-  "#B3B3B3",
-  "#A6A6A6",
-  "#999999",
-  "#8C8C8C",
-  "#808080",
-  "#737373",
-  "#666666",
-  "#595959",
-  "#4D4D4D",
-  "#404040",
-  "#333333",
-  "#262626",
-  "#1A1A1A",
-  "#0D0D0D",
-  "#000000",
-] as const;
+  '#FFFFFF',
+  '#F2F2F2',
+  '#E6E6E6',
+  '#D9D9D9',
+  '#CCCCCC',
+  '#BFBFBF',
+  '#B3B3B3',
+  '#A6A6A6',
+  '#999999',
+  '#8C8C8C',
+  '#808080',
+  '#737373',
+  '#666666',
+  '#595959',
+  '#4D4D4D',
+  '#404040',
+  '#333333',
+  '#262626',
+  '#1A1A1A',
+  '#0D0D0D',
+  '#000000',
+] as const
 
 const darkPalette = [
-  "#000000",
-  "#0D0D0D",
-  "#1A1A1A",
-  "#262626",
-  "#333333",
-  "#404040",
-  "#4D4D4D",
-  "#595959",
-  "#666666",
-  "#737373",
-  "#808080",
-  "#8C8C8C",
-  "#999999",
-  "#A6A6A6",
-  "#B3B3B3",
-  "#BFBFBF",
-  "#CCCCCC",
-  "#D9D9D9",
-  "#E6E6E6",
-  "#F2F2F2",
-  "#FFFFFF",
-] as const;
+  '#000000',
+  '#0D0D0D',
+  '#1A1A1A',
+  '#262626',
+  '#333333',
+  '#404040',
+  '#4D4D4D',
+  '#595959',
+  '#666666',
+  '#737373',
+  '#808080',
+  '#8C8C8C',
+  '#999999',
+  '#A6A6A6',
+  '#B3B3B3',
+  '#BFBFBF',
+  '#CCCCCC',
+  '#D9D9D9',
+  '#E6E6E6',
+  '#F2F2F2',
+  '#FFFFFF',
+] as const
 
 export const light = {
   colors: {
@@ -104,7 +104,7 @@ export const light = {
     lg: 8,
     xl: 12,
   },
-} as const;
+} as const
 
 export const dark = {
   colors: {
@@ -162,4 +162,4 @@ export const dark = {
     lg: 8,
     xl: 12,
   },
-} as const;
+} as const
