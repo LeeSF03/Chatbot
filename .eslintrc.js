@@ -4,12 +4,14 @@ module.exports = {
     'airbnb',
     'plugin:react-native/all',
     'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
   ],
   plugins: [
     'react',
     'react-native',
     '@typescript-eslint',
     '@typescript-eslint/eslint-plugin',
+    'prettier',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -25,7 +27,6 @@ module.exports = {
     semi: [2, 'never'],
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',
-    'max-len': 'off',
     '@typescript-eslint/ban-types': 'off',
     'react-native/no-inline-styles': 'off',
     'react/jsx-filename-extension': 'off',
