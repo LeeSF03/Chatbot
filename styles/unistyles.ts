@@ -16,10 +16,9 @@ declare module 'react-native-unistyles' {
 
 UnistylesRegistry.addBreakpoints(breakpoints)
   .addThemes({
-    light,
     dark,
+    light,
   })
   .addConfig({
-    // you can pass here optional config described below
-    adaptiveThemes: true,
+    // adaptiveThemes: true, // this will override theme selected in the app
   })

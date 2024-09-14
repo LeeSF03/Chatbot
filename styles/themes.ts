@@ -1,4 +1,4 @@
-const primary = '#50E2F1' as const
+const primary = '#CB30FE' as const
 
 const lightPalette = [
   '#FFFFFF',
