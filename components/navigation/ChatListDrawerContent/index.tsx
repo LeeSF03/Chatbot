@@ -1,0 +1,63 @@
+import { View, Text } from 'react-native'
+import React from 'react'
+import { Props } from './props'
+import {
+  DrawerContentScrollView,
+  DrawerItem,
+  DrawerItemList,
+} from '@react-navigation/drawer'
+import { createStyleSheet, useStyles } from 'react-native-unistyles'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useRouter } from 'expo-router'
+
+export const ChatListDrawerContent = ({ ...restProps }: Props) => {
+  //========== HOOKS ==========
+  const { styles } = useStyles(styleSheets)
+  const router = useRouter()
+
+  //========== VARIABLES ==========
+  const { state, navigation } = restProps
+  // console.log('state', state)
+
+  //========== CALLBACKS ==========
+  const handleNavigateNewChatPage = () => {
+    router.navigate('/(chats)/')
+  }
+  return (
+    <SafeAreaView style={styles.drawerWrapper}>
+      <DrawerContentScrollView contentContainerStyle={styles.drawerContainer}>
+        <DrawerItem
+          label={'New Chat'}
+          onPress={handleNavigateNewChatPage}
+          focused={state.index === 0}
+        />
+      </DrawerContentScrollView>
+      <View style={styles.footerContainer}>
+        <Text style={styles.footerLabel}>CHATBOT</Text>
+      </View>
+    </SafeAreaView>
+  )
+}
+
+const styleSheets = createStyleSheet((theme, runtime) => ({
+  drawerWrapper: {
+    flex: 1,
+    backgroundColor: theme.colors.lightPrimary,
+  },
+  drawerContainer: {
+    flex: 1,
+  },
+  footerContainer: {
+    height: 50,
+    backgroundColor: theme.colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footerLabel: {
+    color: 'white',
+    fontFamily: 'JetBrains',
+    fontSize: 24,
+    fontWeight: 'bold',
+    letterSpacing: 5,
+  },
+}))

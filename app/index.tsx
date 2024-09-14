@@ -2,10 +2,10 @@ import React from 'react'
 import { StatusBar, Pressable, Text, Button } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Image } from 'expo-image'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 
-import { ChtSafeAreaView } from '@/components'
 import { hexColorOnInteract, setKvStorage } from '@/helpers'
 
 import OnBoardRobot from '@/assets/images/onboard/onboard-robot.png'
@@ -26,11 +26,11 @@ function OnboardPage() {
 
   //========== VIEW ==========
   if (onboardingComplete) {
-    return <Redirect href="/(tabs)" />
+    return <Redirect href="/(chats)" />
   }
 
   return (
-    <ChtSafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar hidden />
       <LinearGradient
         colors={[starterPurple, '#C52EF7']}
@@ -48,7 +48,7 @@ function OnboardPage() {
           )}
         </Pressable>
       </LinearGradient>
-    </ChtSafeAreaView>
+    </SafeAreaView>
   )
 }
 export default OnboardPage

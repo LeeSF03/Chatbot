@@ -1,4 +1,5 @@
 const primary = '#CB30FE' as const
+const lightPrimary = '#ECDFF9' as const
 
 const lightPalette = [
   '#FFFFFF',
@@ -62,6 +63,7 @@ const spaces = {
 export const light = {
   colors: {
     primary,
+    lightPrimary,
     transparent: '#00000000',
   },
   background: {
@@ -117,6 +119,7 @@ export const light = {
 export const dark = {
   colors: {
     primary,
+    lightPrimary,
     transparent: '#00000000',
   },
   background: {
