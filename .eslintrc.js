@@ -25,6 +25,7 @@ module.exports = {
   rules: {
     quotes: [2, 'single'],
     semi: [2, 'never'],
+    '@typescript-eslint/no-unused-vars': 1,
     'import/prefer-default-export': 'off',
     'import/extensions': 'off',
     '@typescript-eslint/ban-types': 'off',

@@ -1,27 +1,27 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
-import { Props } from './props'
 import { Circle, Svg } from 'react-native-svg'
+import { Props } from './props'
 
-export const ChtMessageBubble = ({
+export function ChtMessageBubble({
   message,
   containerProps,
   messageProps,
   type = 'sent',
-}: Props) => {
-  //========== HOOKS ==========
+}: Props) {
+  //= ========= HOOKS ==========
   const { styles } = useStyles(styleSheets, {
     type,
   })
 
-  //========== VARIABLES ==========
+  //= ========= VARIABLES ==========
   const { style: viewStyle = {}, ...viewProps } = containerProps || {}
   const { style: textStyle = {}, ...textProps } = messageProps || {}
 
   return (
-    <View style={[styles.chatContainer, viewStyle]} {...viewProps}>
-      <Text style={[styles.chatMessage, textStyle]} {...textProps}>
+    <View style={[styles.container, viewStyle]} {...viewProps}>
+      <Text style={[styles.message, textStyle]} {...textProps}>
         {message}
       </Text>
     </View>
@@ -29,14 +29,14 @@ export const ChtMessageBubble = ({
 }
 
 const styleSheets = createStyleSheet((theme) => ({
-  chatContainer: {
+  container: {
     backgroundColor: theme.colors.primary,
     borderRadius: 10,
     padding: theme.paddings.md,
     flexShrink: 1,
     flexGrow: 1,
   },
-  chatMessage: {
+  message: {
     color: 'white',
     fontFamily: 'JetBrains',
     fontSize: 14,

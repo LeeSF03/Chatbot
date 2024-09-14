@@ -19,7 +19,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
-  //========== HOOKS ==========
+  //= ========= HOOKS ==========
   const colorScheme = useColorScheme()
   const initialTheme = useThemeStore((state) => state.theme)
   useInitialTheme('light')
@@ -28,7 +28,7 @@ export default function RootLayout() {
     JetBrains: require('../assets/fonts/JetBrainsMonoNerdFontMono-Regular.ttf'),
   })
 
-  //========== EFFECTS ==========
+  //= ========= EFFECTS ==========
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync()

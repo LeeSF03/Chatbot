@@ -15,16 +15,16 @@ import { Redirect } from 'expo-router'
 const starterPurple = '#ECDFF9'
 
 function OnboardPage() {
-  //========== HOOKS ==========
+  //= ========= HOOKS ==========
   const { styles } = useStyles(styleSheets)
   const [onboardingComplete] = useMMKVBoolean('onboardingComplete')
 
-  //========== CALLBACKS ==========
+  //= ========= CALLBACKS ==========
   const handleGetStarted = () => {
     setKvStorage('onboardingComplete', true)
   }
 
-  //========== VIEW ==========
+  //= ========= VIEW ==========
   if (onboardingComplete) {
     return <Redirect href="/(chats)" />
   }

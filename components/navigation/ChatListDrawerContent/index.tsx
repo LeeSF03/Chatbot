@@ -1,6 +1,5 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import { Props } from './props'
 import {
   DrawerContentScrollView,
   DrawerItem,
@@ -9,17 +8,18 @@ import {
 import { createStyleSheet, useStyles } from 'react-native-unistyles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useRouter } from 'expo-router'
+import { Props } from './props'
 
-export const ChatListDrawerContent = ({ ...restProps }: Props) => {
-  //========== HOOKS ==========
+export function ChatListDrawerContent({ ...restProps }: Props) {
+  //= ========= HOOKS ==========
   const { styles } = useStyles(styleSheets)
   const router = useRouter()
 
-  //========== VARIABLES ==========
+  //= ========= VARIABLES ==========
   const { state, navigation } = restProps
   // console.log('state', state)
 
-  //========== CALLBACKS ==========
+  //= ========= CALLBACKS ==========
   const handleNavigateNewChatPage = () => {
     router.navigate('/(chats)/')
   }
@@ -27,7 +27,7 @@ export const ChatListDrawerContent = ({ ...restProps }: Props) => {
     <SafeAreaView style={styles.drawerWrapper}>
       <DrawerContentScrollView contentContainerStyle={styles.drawerContainer}>
         <DrawerItem
-          label={'New Chat'}
+          label="New Chat"
           onPress={handleNavigateNewChatPage}
           focused={state.index === 0}
         />
