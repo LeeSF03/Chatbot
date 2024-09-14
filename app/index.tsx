@@ -64,7 +64,7 @@ const styleSheets = createStyleSheet((theme) => ({
   getStartedText: (pressed: boolean) => ({
     fontFamily: 'JetBrains',
     fontSize: 24,
-    color: '#ecdff9',
+    color: '#ECDFF9',
     padding: theme.paddings.md,
     borderRadius: 10,
     backgroundColor: pressed ? hexColorOnInteract('#1C0055') : '#1C0055',

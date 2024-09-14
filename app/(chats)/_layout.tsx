@@ -12,7 +12,6 @@ export default function TabLayout() {
       <Drawer
         drawerContent={ChatListDrawerContent}
         screenOptions={{
-          // headerBackgroundContainerStyle: styles.headerBackgroundContainer,
           headerStyle: styles.headerBackgroundContainer,
           headerTitleStyle: styles.headerTitle,
           headerTintColor: 'white',
@@ -24,12 +23,6 @@ export default function TabLayout() {
           name="index"
           options={{
             title: 'New Chat',
-            // tabBarIcon: ({ color, focused }) => (
-            //   <TabBarIcon
-            //     name={focused ? 'home' : 'home-outline'}
-            //     color={color}
-            //   />
-            // ),
           }}
         />
       </Drawer>

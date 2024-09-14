@@ -1,88 +1,90 @@
-import { Image, StyleSheet, Platform, Button } from 'react-native'
+import { View, Image } from 'react-native'
+import { useStyles, createStyleSheet } from 'react-native-unistyles'
+import { ChtMessageBubble } from '@/components'
+import { useMemo } from 'react'
+import Svg, { Circle } from 'react-native-svg'
+import ChatRobot from '@/assets/images/chat/chat-robot.png'
 
-import { HelloWave } from '@/components/HelloWave'
-import ParallaxScrollView from '@/components/ParallaxScrollView'
-import { ThemedText } from '@/components/ThemedText'
-import { ThemedView } from '@/components/ThemedView'
-import { getKvStorageBool, setKvStorage } from '@/helpers'
-import { useRouter } from 'expo-router'
+type ChatSectionProps = {
+  type?: 'sent' | 'received'
+  message: string
+}
 
-export default function HomeScreen() {
-  const { navigate } = useRouter()
+const ChatSection = ({ type = 'sent', message }: ChatSectionProps) => {
+  //========== HOOKS ==========
+  const { styles } = useStyles(chatSectionStyleSheets, {
+    type,
+  })
+
+  //========== VARIABLES ==========
+  const RobotProfile = useMemo(
+    () =>
+      type === 'received' ? (
+        <Image source={ChatRobot} style={styles.chatRobotImage} />
+      ) : null,
+    [type]
+  )
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <Button
-        title="onBoard to false"
-        onPress={() => setKvStorage('onboardingComplete', false)}
-      />
-      <Button
-        title="get onboard"
-        onPress={() =>
-          console.log('get onboard', getKvStorageBool('onboardingComplete'))
-        }
-      />
-      <Button title="go to onboarding" onPress={() => navigate('/')} />
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{' '}
-          <ThemedText type="defaultSemiBold">app/(chats)/index.tsx</ThemedText>{' '}
-          to see changes. Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this
-          starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText>{' '}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{' '}
-          directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.messageWrapper}>
+      <View style={styles.messageContainer}>
+        {RobotProfile}
+        <ChtMessageBubble message={message} type={type} />
+      </View>
+    </View>
   )
 }
 
-const styles = StyleSheet.create({
-  reactLogo: {
-    bottom: 0,
-    height: 178,
-    left: 0,
-    position: 'absolute',
-    width: 290,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  titleContainer: {
-    alignItems: 'center',
+const chatSectionStyleSheets = createStyleSheet((theme) => ({
+  messageWrapper: {
     flexDirection: 'row',
-    gap: 8,
+    marginBottom: theme.margins.md,
+    variants: {
+      type: {
+        sent: {
+          justifyContent: 'flex-end',
+        },
+        received: {
+          justifyContent: 'flex-start',
+        },
+      },
+    },
   },
-})
+  messageContainer: {
+    flexDirection: 'row',
+    width: {
+      sm: 600,
+    },
+    maxWidth: '85%',
+    columnGap: theme.margins.sm,
+  },
+  chatRobotImage: {
+    width: 45,
+    height: 45,
+    borderRadius: 45,
+    borderWidth: 3,
+    borderColor: '#1C0055',
+  },
+}))
+
+export default function ChatScreen() {
+  const { styles } = useStyles(chatScreenStyleSheets)
+
+  return (
+    <View style={styles.chatPageContainer}>
+      <ChatSection message="asdlfa sdl;fkj;as dsdsdfgdfg dsfgsd fsdf gsdfgsdfgs dfgsd fgsdfg sdfgdsfgdf gsdfgdsfglfj" />
+      <ChatSection
+        message="asd lfasdl ;fkj; asdlfj aasdas dasd asds dsdfgsd fgsdf gdsfgsdf sdfasdf asdfasdf asdfasd"
+        type="received"
+      />
+    </View>
+  )
+}
+
+const chatScreenStyleSheets = createStyleSheet((theme) => ({
+  chatPageContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.lightPrimary,
+    padding: theme.paddings.md,
+  },
+}))
