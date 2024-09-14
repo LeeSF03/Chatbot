@@ -1,3 +1,6 @@
+import 'react-native-reanimated'
+import '@/styles/unistyles'
+
 import {
   DarkTheme,
   DefaultTheme,
@@ -7,17 +10,15 @@ import { useFonts } from 'expo-font'
 import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import { useEffect } from 'react'
-import 'react-native-reanimated'
-import '@/styles/unistyles'
 import { useInitialTheme } from 'react-native-unistyles'
 import { useThemeStore } from '@/stores'
-
 import { useColorScheme } from '@/hooks/useColorScheme'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
+  //========== HOOKS ==========
   const colorScheme = useColorScheme()
   const initialTheme = useThemeStore((state) => state.theme)
   useInitialTheme(initialTheme)
@@ -26,6 +27,7 @@ export default function RootLayout() {
     JetBrains: require('../assets/fonts/JetBrainsMonoNerdFontMono-Regular.ttf'),
   })
 
+  //========== EFFECTS ==========
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync()

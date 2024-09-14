@@ -48,9 +48,21 @@ const darkPalette = [
   '#FFFFFF',
 ] as const
 
+const spaces = {
+  xxs: 2,
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  xxl: 24,
+  xxxl: 28,
+} as const
+
 export const light = {
   colors: {
     primary,
+    transparent: '#00000000',
   },
   background: {
     background0: lightPalette[0],
@@ -98,17 +110,14 @@ export const light = {
     foreground19: lightPalette[1],
     foreground20: lightPalette[0],
   },
-  margins: {
-    sm: 2,
-    md: 4,
-    lg: 8,
-    xl: 12,
-  },
+  margins: spaces,
+  paddings: spaces,
 } as const
 
 export const dark = {
   colors: {
     primary,
+    transparent: '#00000000',
   },
   background: {
     background0: darkPalette[0],
@@ -156,10 +165,6 @@ export const dark = {
     foreground19: darkPalette[1],
     foreground20: darkPalette[0],
   },
-  margins: {
-    sm: 2,
-    md: 4,
-    lg: 8,
-    xl: 12,
-  },
+  margins: spaces,
+  paddings: spaces,
 } as const
