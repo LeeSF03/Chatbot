@@ -1,7 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
-import { Circle, Svg } from 'react-native-svg'
 import { Props } from './props'
 
 export function ChtMessageBubble({

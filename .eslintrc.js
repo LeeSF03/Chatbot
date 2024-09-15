@@ -42,6 +42,15 @@ module.exports = {
     '@typescript-eslint/no-require-imports': 'off',
     'react/no-unstable-nested-components': 'off',
     'global-require': 'off',
+    'react-hooks/exhaustive-deps': 'off',
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto',
+      },
+    ],
+    'spaced-comment': 'off',
+    'import/no-extraneous-dependencies': 'off',
   },
   overrides: [
     {

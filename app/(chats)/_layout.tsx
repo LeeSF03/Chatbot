@@ -4,7 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { ChatListDrawerContent } from '@/components'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 
-export default function TabLayout() {
+export default function DrawerLayout() {
   const { styles } = useStyles(styleSheets)
 
   return (
