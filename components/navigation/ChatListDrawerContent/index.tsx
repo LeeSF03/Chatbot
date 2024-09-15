@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Platform } from 'react-native'
 import React from 'react'
 import {
   DrawerContentScrollView,
@@ -26,11 +26,7 @@ export function ChatListDrawerContent({ ...restProps }: Props) {
   return (
     <SafeAreaView style={styles.drawerWrapper}>
       <DrawerContentScrollView contentContainerStyle={styles.drawerContainer}>
-        <DrawerItem
-          label="New Chat"
-          onPress={handleNavigateNewChatPage}
-          focused={state.index === 0}
-        />
+        <DrawerItemList {...restProps} />
       </DrawerContentScrollView>
       <View style={styles.footerContainer}>
         <Text style={styles.footerLabel}>CHATBOT</Text>
@@ -43,6 +39,7 @@ const styleSheets = createStyleSheet((theme, runtime) => ({
   drawerWrapper: {
     flex: 1,
     backgroundColor: theme.colors.lightPrimary,
+    paddingTop: Platform.OS === 'android' ? 50 : 0,
   },
   drawerContainer: {
     flex: 1,

@@ -21,7 +21,6 @@ const styleSheets = createStyleSheet((theme) => ({
     backgroundColor: theme.colors.lightPrimary,
     color: theme.foreground.foreground0,
     borderRadius: 10,
-    borderWidth: 1,
     padding: theme.paddings.sm,
     width: 300,
   },

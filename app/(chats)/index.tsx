@@ -1,7 +1,7 @@
-import { View, Image, FlatList, Pressable } from 'react-native'
+import { View, Image, FlatList, Pressable, Button } from 'react-native'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 import { ChtMessageBubble, ChtTextInput } from '@/components'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ChatRobot from '@/assets/images/chat/chat-robot.png'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useKeyboardGradualHeightAnimation } from '@/hooks'
@@ -10,14 +10,9 @@ import { StatusBar } from 'expo-status-bar'
 import { ChtSpacer } from '@/components/ChtSpacer'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { hexColorOnInteract } from '@/helpers'
-import {
-  Controller,
-  ControllerFieldState,
-  ControllerRenderProps,
-  FieldValues,
-  useForm,
-  UseFormStateReturn,
-} from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite'
+import { db } from '@/db'
 
 type ChatSectionProps = {
   type?: 'sent' | 'received'
@@ -81,13 +76,13 @@ const chatSectionStyleSheets = createStyleSheet((theme) => ({
   },
 }))
 
-type Chat = {
+type Message = {
   id: number
   message: string
   type: 'sent' | 'received'
 }
 
-const dummyChats: Chat[] = [
+const dummyMessages: Message[] = [
   {
     id: 0,
     message:
@@ -163,18 +158,24 @@ export default function ChatScreen() {
   //========== HOOKS ==========
   const { styles } = useStyles(chatScreenStyleSheets)
   const { animatedStyle } = useKeyboardGradualHeightAnimation()
-  const [chats, setChats] = useState(dummyChats)
+  const [messages, setMessages] = useState(dummyMessages)
+  // const { data } = useLiveQuery(db.select().from(users))
   const { control, handleSubmit } = useForm({
     defaultValues: {
       message: '',
     },
   })
 
+  //========== FUNCTIONS ==========
+  const handleMessagesChange = (message: Message) => {
+    setMessages((prevMessages) => [...prevMessages, message])
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar hidden />
       <FlatList
-        data={chats}
+        data={messages}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <ChatSection message={item.message} type={item.type} />
@@ -182,6 +183,13 @@ export default function ChatScreen() {
         ListHeaderComponent={<ChtSpacer />}
         style={styles.chatContainer}
       />
+      {/* <Button title="get users" onPress={() => {}} />
+      <Button
+        title="insert user"
+        onPress={() => {
+          db.insert(users).values({ name: 'test5', id: 5 }).execute()
+        }}
+      /> */}
       <View style={styles.textInputContainer}>
         <Controller
           name="message"
@@ -194,11 +202,7 @@ export default function ChatScreen() {
             />
           )}
         />
-        <Pressable
-          onPress={handleSubmit((data) => {
-            console.log(data)
-          })}
-        >
+        <Pressable onPress={() => {}}>
           {({ pressed }) => (
             <Ionicons
               name="send-sharp"

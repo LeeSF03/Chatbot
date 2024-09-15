@@ -15,6 +15,9 @@ import { useThemeStore } from '@/stores'
 import { useColorScheme } from '@/hooks/useColorScheme'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
+import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator'
+import { db } from '@/db'
+import migrations from '@/drizzle/migrations'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
@@ -28,15 +31,16 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     JetBrains: require('../assets/fonts/JetBrainsMonoNerdFontMono-Regular.ttf'),
   })
+  const { success } = useMigrations(db, migrations)
 
   //= ========= EFFECTS ==========
   useEffect(() => {
-    if (loaded) {
+    if (loaded && success) {
       SplashScreen.hideAsync()
     }
-  }, [loaded])
+  }, [loaded, success])
 
-  if (!loaded) {
+  if (!loaded || !success) {
     return null
   }
 
