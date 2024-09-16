@@ -51,6 +51,8 @@ module.exports = {
     ],
     'spaced-comment': 'off',
     'import/no-extraneous-dependencies': 'off',
+    'no-shadow': 'off',
+    'react/function-component-definition': 'off',
   },
   overrides: [
     {

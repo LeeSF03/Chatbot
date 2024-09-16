@@ -1,13 +1,15 @@
 import { index, sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
 
 // TODO: Delete this example table
-export const users = sqliteTable(
-  'users',
+export const conversations = sqliteTable(
+  'conversations',
   {
-    id: integer('id'),
-    name: text('name').notNull(),
+    id: integer('id').primaryKey(),
+    title: text('title').notNull(),
+    createdAt: integer('created_at').notNull(),
+    updatedAt: integer('updated_at').notNull(),
   },
   (table) => ({
-    idx1: index('name_index').on(table.name),
+    id_idx: index('id_index').on(table.id),
   })
 )

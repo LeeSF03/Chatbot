@@ -1,20 +1,23 @@
 import { TextInput } from 'react-native'
-import React from 'react'
+import React, { memo, forwardRef } from 'react'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 import { Props } from './props'
 
-export function ChtTextInput({ style, ...restProps }: Props) {
-  //========== HOOK ==========
-  const { styles } = useStyles(styleSheets)
+export const ChtTextInput = memo(
+  forwardRef<TextInput, Props>(({ style, ...restProps }: Props, ref) => {
+    //========== HOOK ==========
+    const { styles } = useStyles(styleSheets)
 
-  return (
-    <TextInput
-      style={[styles.input, style]}
-      placeholder="Send..."
-      {...restProps}
-    />
-  )
-}
+    return (
+      <TextInput
+        ref={ref}
+        style={[styles.input, style]}
+        placeholder="Send..."
+        {...restProps}
+      />
+    )
+  })
+)
 
 const styleSheets = createStyleSheet((theme) => ({
   input: {

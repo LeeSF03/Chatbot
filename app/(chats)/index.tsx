@@ -1,4 +1,11 @@
-import { View, Image, FlatList, Pressable, Button } from 'react-native'
+import {
+  View,
+  Image,
+  FlatList,
+  Pressable,
+  Button,
+  Keyboard,
+} from 'react-native'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 import { ChtMessageBubble, ChtTextInput } from '@/components'
 import { useEffect, useMemo, useState } from 'react'
@@ -11,8 +18,7 @@ import { ChtSpacer } from '@/components/ChtSpacer'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { hexColorOnInteract } from '@/helpers'
 import { Controller, useForm } from 'react-hook-form'
-import { useLiveQuery } from 'drizzle-orm/expo-sqlite'
-import { db } from '@/db'
+import { useNewChatModalStore } from '@/stores'
 
 type ChatSectionProps = {
   type?: 'sent' | 'received'
@@ -159,7 +165,7 @@ export default function ChatScreen() {
   const { styles } = useStyles(chatScreenStyleSheets)
   const { animatedStyle } = useKeyboardGradualHeightAnimation()
   const [messages, setMessages] = useState(dummyMessages)
-  // const { data } = useLiveQuery(db.select().from(users))
+  const { isOpen } = useNewChatModalStore(({ isOpen }) => ({ isOpen }))
   const { control, handleSubmit } = useForm({
     defaultValues: {
       message: '',
@@ -167,8 +173,9 @@ export default function ChatScreen() {
   })
 
   //========== FUNCTIONS ==========
-  const handleMessagesChange = (message: Message) => {
-    setMessages((prevMessages) => [...prevMessages, message])
+  const onSendMessage = (data: { message: string }) => {
+    Keyboard.dismiss()
+    console.log(data)
   }
 
   return (
@@ -183,26 +190,21 @@ export default function ChatScreen() {
         ListHeaderComponent={<ChtSpacer />}
         style={styles.chatContainer}
       />
-      {/* <Button title="get users" onPress={() => {}} />
-      <Button
-        title="insert user"
-        onPress={() => {
-          db.insert(users).values({ name: 'test5', id: 5 }).execute()
-        }}
-      /> */}
       <View style={styles.textInputContainer}>
         <Controller
           name="message"
           control={control}
-          render={({ field: { onChange, ...rest } }) => (
+          rules={{ required: true }}
+          render={({ field: { onChange, onBlur, ...rest } }) => (
             <ChtTextInput
               style={styles.textInput}
               onChangeText={onChange}
+              onSubmitEditing={handleSubmit(onSendMessage)}
               {...rest}
             />
           )}
         />
-        <Pressable onPress={() => {}}>
+        <Pressable onPress={handleSubmit(onSendMessage)}>
           {({ pressed }) => (
             <Ionicons
               name="send-sharp"
@@ -212,7 +214,7 @@ export default function ChatScreen() {
           )}
         </Pressable>
       </View>
-      <Animated.View style={animatedStyle} />
+      {!isOpen && <Animated.View style={animatedStyle} />}
     </SafeAreaView>
   )
 }
@@ -237,6 +239,7 @@ const chatScreenStyleSheets = createStyleSheet((theme) => ({
   },
   textInput: {
     flex: 1,
+    flexShrink: 1,
   },
   sendIcon: (pressed: boolean) => ({
     color: pressed
