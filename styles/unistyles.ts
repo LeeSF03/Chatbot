@@ -20,5 +20,5 @@ UnistylesRegistry.addBreakpoints(breakpoints)
     light,
   })
   .addConfig({
-    // adaptiveThemes: true, // this will override theme selected in the app
+    adaptiveThemes: true, // this will override theme selected in the app
   })

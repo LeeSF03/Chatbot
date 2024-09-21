@@ -1,31 +1,28 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 import { Props } from './props'
 
-export function ChtMessageBubble({
-  message,
-  containerProps,
-  messageProps,
-  type = 'sent',
-}: Props) {
-  //= ========= HOOKS ==========
-  const { styles } = useStyles(styleSheets, {
-    type,
-  })
+export const ChtMessageBubble = memo(
+  ({ message, containerProps, messageProps, type = 'sent' }: Props) => {
+    //= ========= HOOKS ==========
+    const { styles } = useStyles(styleSheets, {
+      type,
+    })
 
-  //= ========= VARIABLES ==========
-  const { style: viewStyle = {}, ...viewProps } = containerProps || {}
-  const { style: textStyle = {}, ...textProps } = messageProps || {}
+    //= ========= VARIABLES ==========
+    const { style: viewStyle = {}, ...viewProps } = containerProps || {}
+    const { style: textStyle = {}, ...textProps } = messageProps || {}
 
-  return (
-    <View style={[styles.container, viewStyle]} {...viewProps}>
-      <Text style={[styles.message, textStyle]} {...textProps}>
-        {message}
-      </Text>
-    </View>
-  )
-}
+    return (
+      <View style={[styles.container, viewStyle]} {...viewProps}>
+        <Text style={[styles.message, textStyle]} {...textProps}>
+          {message}
+        </Text>
+      </View>
+    )
+  }
+)
 
 const styleSheets = createStyleSheet((theme) => ({
   container: {

@@ -34,6 +34,7 @@ export default function DrawerLayout() {
   const handleCloseModal = () => {
     Keyboard.dismiss()
     closeModal()
+    reset()
   }
   const onCreateChat = async (data: Conversation) => {
     handleCloseModal()
@@ -68,7 +69,7 @@ export default function DrawerLayout() {
         />
         <View style={styles.newChatModal}>
           <View style={styles.newChatTopContainer}>
-            <Text style={styles.newChatModalTitle}>New Chat</Text>
+            <Text style={styles.newChatModalTitle}>Enter Chat Title</Text>
             <Pressable onPress={handleSubmit(onCreateChat)}>
               {({ pressed }) => (
                 <Feather

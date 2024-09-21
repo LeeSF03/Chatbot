@@ -25,8 +25,8 @@ SplashScreen.preventAutoHideAsync()
 export default function RootLayout() {
   //= ========= HOOKS ==========
   const colorScheme = useColorScheme()
-  const initialTheme = useThemeStore((state) => state.theme)
-  useInitialTheme('light')
+  // const initialTheme = useThemeStore((state) => state.theme)
+  // useInitialTheme('light')
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
     JetBrains: require('../assets/fonts/JetBrainsMonoNerdFontMono-Regular.ttf'),
