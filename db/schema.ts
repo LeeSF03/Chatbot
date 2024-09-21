@@ -1,7 +1,7 @@
 import { index, sqliteTable, integer, text } from 'drizzle-orm/sqlite-core'
 
 // TODO: Delete this example table
-export const conversations = sqliteTable(
+export const conversationSchema = sqliteTable(
   'conversations',
   {
     id: integer('id').primaryKey(),

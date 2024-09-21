@@ -1,5 +1,5 @@
 import { View, Text, Platform, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   DrawerContentScrollView,
   DrawerItem,
@@ -8,47 +8,70 @@ import {
 import { createStyleSheet, useStyles } from 'react-native-unistyles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Feather from '@expo/vector-icons/Feather'
-import { useNewChatModalStore } from '@/stores'
+import { useConversationStore, useNewChatModalStore } from '@/stores'
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite'
-import { db, conversations } from '@/db'
+import { db, conversationSchema } from '@/db'
 import { desc } from 'drizzle-orm'
+import Entypo from '@expo/vector-icons/Entypo'
 import { Props } from './props'
 
 export function ChatListDrawerContent({ ...restProps }: Props) {
-  //= ========= HOOKS ==========
+  //========== HOOKS ==========
   const { styles } = useStyles(styleSheets)
-  const { openModal } = useNewChatModalStore(({ openModal }) => ({ openModal }))
+  const { openModal } = useNewChatModalStore((state) => ({
+    openModal: state.openModal,
+  }))
+  const { conversations, setConversations } = useConversationStore((state) => ({
+    conversations: state.conversations,
+    setConversations: state.setConversations,
+  }))
   const { data } = useLiveQuery(
-    db.select().from(conversations).orderBy(desc(conversations.createdAt))
+    db
+      .select()
+      .from(conversationSchema)
+      .orderBy(desc(conversationSchema.createdAt))
   )
 
-  //========== STATES ==========
-  const [conversationItems, setConversationItems] = useState(data)
+  //========== EFFECTS ==========
+  useEffect(() => {
+    setConversations(data)
+  }, [data])
 
   return (
     <SafeAreaView style={styles.drawerWrapper}>
-      <DrawerContentScrollView contentContainerStyle={styles.drawerContainer}>
+      <Pressable style={styles.drawerItemContainer} onPress={openModal}>
+        {({ pressed }) => (
+          <View style={styles.drawerItem(pressed)}>
+            <Text style={styles.drawerItemLabel}>New</Text>
+            <Feather
+              name="plus-circle"
+              size={16}
+              style={styles.drawerItemIcon}
+            />
+          </View>
+        )}
+      </Pressable>
+      {/* TODO: restyle this */}
+      <View style={{ borderWidth: 0.5, borderColor: 'black', margin: 10 }} />
+      <DrawerContentScrollView>
         <DrawerItemList {...restProps} />
-        <Pressable style={styles.drawerItemContainer} onPress={openModal}>
-          {({ pressed }) => (
-            <View style={styles.drawerItem(pressed)}>
-              <Text style={styles.drawerItemLabel}>New</Text>
-              <Feather
-                name="plus-circle"
-                size={16}
-                style={styles.drawerItemIcon}
-              />
-            </View>
-          )}
-        </Pressable>
-        {/* TODO: restyle this */}
-        <View style={{ borderWidth: 0.5, borderColor: 'black', margin: 10 }} />
-        {conversationItems.map((conversation) => (
-          <DrawerItem
-            key={conversation.id}
-            label={conversation.title}
-            onPress={() => {}}
-          />
+        {conversations.map(({ id, title }) => (
+          <Pressable
+            key={id}
+            style={styles.drawerItemContainer}
+            onPress={() => console.log('pressed', id)}
+          >
+            {({ pressed }) => (
+              <View style={styles.drawerItem(pressed)}>
+                <Text style={styles.drawerItemLabel}>{title}</Text>
+                <Entypo
+                  name="dots-three-vertical"
+                  size={16}
+                  style={styles.drawerItemIcon}
+                />
+              </View>
+            )}
+          </Pressable>
         ))}
       </DrawerContentScrollView>
       <View style={styles.footerContainer}>
@@ -63,9 +86,6 @@ const styleSheets = createStyleSheet((theme, runtime) => ({
     flex: 1,
     backgroundColor: theme.colors.lightPrimary,
     paddingTop: Platform.OS === 'android' ? 50 : 0,
-  },
-  drawerContainer: {
-    flex: 1,
   },
   footerContainer: {
     height: 50,
@@ -91,6 +111,7 @@ const styleSheets = createStyleSheet((theme, runtime) => ({
     borderRadius: 5,
   }),
   drawerItemLabel: {
+    flex: 1,
     marginRight: theme.margins.sm,
     color: 'white',
   },

@@ -4,7 +4,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { ChatListDrawerContent, ChtTextInput } from '@/components'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 import { Text, Pressable, View, Keyboard } from 'react-native'
-import { useNewChatModalStore } from '@/stores'
+import { useConversationStore, useNewChatModalStore } from '@/stores'
 import Feather from '@expo/vector-icons/Feather'
 import { Controller, useForm } from 'react-hook-form'
 import { createConversation } from '@/helpers'
@@ -16,9 +16,14 @@ type Conversation = {
 export default function DrawerLayout() {
   //= ========= HOOKS ==========
   const { styles } = useStyles(styleSheets)
-  const { isOpen, closeModal } = useNewChatModalStore(
-    ({ isOpen, closeModal }) => ({ isOpen, closeModal })
-  )
+  const { isOpen, closeModal } = useNewChatModalStore((state) => ({
+    isOpen: state.isOpen,
+    closeModal: state.closeModal,
+  }))
+  const { conversations, setConversations } = useConversationStore((state) => ({
+    conversations: state.conversations,
+    setConversations: state.setConversations,
+  }))
   const { control, handleSubmit, reset } = useForm<Conversation>({
     defaultValues: {
       title: '',
@@ -30,9 +35,10 @@ export default function DrawerLayout() {
     Keyboard.dismiss()
     closeModal()
   }
-  const onCreateChat = (data: Conversation) => {
+  const onCreateChat = async (data: Conversation) => {
     handleCloseModal()
-    createConversation(data.title)
+    const cv = await createConversation(data.title)
+    setConversations([...cv, ...conversations])
     reset()
   }
 
