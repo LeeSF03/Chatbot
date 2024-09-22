@@ -20,10 +20,12 @@ export default function DrawerLayout() {
     isOpen: state.isOpen,
     closeModal: state.closeModal,
   }))
-  const { conversations, setConversations } = useConversationStore((state) => ({
-    conversations: state.conversations,
-    setConversations: state.setConversations,
-  }))
+  const { conversations, setConversations, selectedConversation } =
+    useConversationStore((state) => ({
+      conversations: state.conversations,
+      setConversations: state.setConversations,
+      selectedConversation: state.selectedConversation,
+    }))
   const { control, handleSubmit, reset } = useForm<Conversation>({
     defaultValues: {
       title: '',
@@ -58,7 +60,13 @@ export default function DrawerLayout() {
         <Drawer.Screen
           name="index"
           options={{
-            title: 'Chat Demo',
+            headerTitle: 'New Chat',
+          }}
+        />
+        <Drawer.Screen
+          name="[conversationId]"
+          options={{
+            headerTitle: selectedConversation?.title ?? '',
           }}
         />
       </Drawer>

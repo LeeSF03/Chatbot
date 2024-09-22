@@ -6,7 +6,6 @@ import ChatRobot from '@/assets/images/chat/chat-robot.png'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useKeyboardGradualHeightAnimation } from '@/hooks'
 import Animated from 'react-native-reanimated'
-import { StatusBar } from 'expo-status-bar'
 import { ChtSpacer } from '@/components/ChtSpacer'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { hexColorOnInteract } from '@/helpers'
@@ -101,15 +100,33 @@ const ChatScreen = () => {
     },
   })
 
+  // TODO: delete later
+  const demoMessages: Message[] = useMemo(
+    () => [
+      {
+        id: 0,
+        message: `this is chat id ${conversationId}`,
+        type: 'sent',
+      },
+    ],
+    [conversationId]
+  )
+
   //========== FUNCTIONS ==========
   const onSendMessage = (data: { message: string }) => {
     Keyboard.dismiss()
-    console.log(data)
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        id: messages.length,
+        message: data.message,
+        type: 'sent',
+      },
+    ])
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar hidden />
       <FlatList
         data={messages}
         keyExtractor={(item) => item.id.toString()}

@@ -1,9 +1,6 @@
-import { View, Text, Platform, Pressable, Keyboard } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from '@react-navigation/drawer'
+import { View, Text, Platform, Pressable } from 'react-native'
+import React, { useEffect, useMemo } from 'react'
+import { DrawerContentScrollView } from '@react-navigation/drawer'
 import { createStyleSheet, useStyles } from 'react-native-unistyles'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Feather from '@expo/vector-icons/Feather'
@@ -19,32 +16,31 @@ import { useRouter } from 'expo-router'
 import { Props } from './props'
 
 export function ChatListDrawerContent({ ...restProps }: Props) {
-  // close the keyboard when drawer is opened
-  Keyboard.dismiss()
-
   //========== HOOKS ==========
   const { styles, theme } = useStyles(styleSheets)
-  const router = useRouter()
+  const { push } = useRouter()
   const { openModal } = useNewChatModalStore((state) => ({
     openModal: state.openModal,
   }))
-  const { conversations, setConversations, removeConversation } =
-    useConversationStore((state) => ({
-      conversations: state.conversations,
-      setConversations: state.setConversations,
-      removeConversation: state.removeConversation,
-    }))
+  const {
+    conversations,
+    setConversations,
+    removeConversation,
+    selectedConversation,
+    selectConversation,
+  } = useConversationStore((state) => ({
+    conversations: state.conversations,
+    setConversations: state.setConversations,
+    removeConversation: state.removeConversation,
+    selectedConversation: state.selectedConversation,
+    selectConversation: state.selectConversation,
+  }))
   const { data } = useLiveQuery(
     db
       .select()
       .from(conversationSchema)
       .orderBy(desc(conversationSchema.createdAt))
   )
-
-  //========== STATES ==========
-  const [selectedConversation, setSelectedConversation] = useState<
-    number | null
-  >(null)
 
   //========== VARIABLES ==========
   const primaryOnInteract = useMemo(
@@ -60,11 +56,13 @@ export function ChatListDrawerContent({ ...restProps }: Props) {
   const handleEditConversation = (id: number) => {
     console.log('edit', id)
   }
-  const handleConversationItemPress = (id: number) => {
-    setSelectedConversation(id)
-    router.push({
-      pathname: '/(chats)[conversationId]',
-      params: { conversationId: id },
+  const handleConversationItemPress = (
+    conversation: Exclude<typeof selectedConversation, null>
+  ) => {
+    selectConversation(conversation)
+    push({
+      pathname: '/chat/[conversationId]',
+      params: { conversationId: conversation.id },
     })
   }
 
@@ -94,14 +92,13 @@ export function ChatListDrawerContent({ ...restProps }: Props) {
       {/* TODO: restyle this */}
       <View style={{ borderWidth: 0.5, borderColor: 'black', margin: 10 }} />
       <DrawerContentScrollView>
-        <DrawerItemList {...restProps} />
-        {conversations.map(({ id, title }) => (
-          <View key={id} style={styles.drawerItemContainer}>
+        {conversations.map((conversation) => (
+          <View key={conversation.id} style={styles.drawerItemContainer}>
             <Pressable
-              key={id}
+              key={conversation.id}
               style={(state) => [
                 styles.drawerItem,
-                selectedConversation === id
+                selectedConversation?.id === conversation.id
                   ? {
                       backgroundColor:
                         state.pressed && Platform.OS === 'ios'
@@ -116,15 +113,18 @@ export function ChatListDrawerContent({ ...restProps }: Props) {
                     },
               ]}
               onPress={() => {
-                setSelectedConversation(id)
-                handleConversationItemPress(id)
+                handleConversationItemPress(conversation)
               }}
               android_ripple={{
                 color:
-                  selectedConversation === id ? primaryOnInteract : '#EFBBFF',
+                  conversation?.id === selectedConversation?.id
+                    ? primaryOnInteract
+                    : '#EFBBFF',
               }}
             >
-              <Text style={styles.conversationItemLabel}>{title}</Text>
+              <Text style={styles.conversationItemLabel}>
+                {conversation.title}
+              </Text>
               {/* have to wrap the dropdown in view, otherwise the press colorchange of the view parent can only happen once for some reason */}
               <View>
                 <ChtChatDrawerDropdownMenu
@@ -139,12 +139,12 @@ export function ChatListDrawerContent({ ...restProps }: Props) {
                     {
                       key: 'delete',
                       title: 'Delete',
-                      onPress: () => handleDeleteConversation(id),
+                      onPress: () => handleDeleteConversation(conversation.id),
                     },
                     {
                       key: 'edit',
                       title: 'Edit',
-                      onPress: () => handleEditConversation(id),
+                      onPress: () => handleEditConversation(conversation.id),
                     },
                   ]}
                 />
@@ -164,7 +164,6 @@ const styleSheets = createStyleSheet((theme, runtime) => ({
   drawerWrapper: {
     flex: 1,
     backgroundColor: theme.colors.lightPrimary,
-    paddingTop: Platform.OS === 'android' ? 50 : 0,
   },
   footerContainer: {
     height: 50,
@@ -195,6 +194,7 @@ const styleSheets = createStyleSheet((theme, runtime) => ({
   conversationItemLabel: {
     flex: 1,
     color: 'white',
+    fontFamily: 'JetBrains',
   },
   drawerItemIcon: {
     color: 'white',
