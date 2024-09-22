@@ -26,7 +26,7 @@ function OnboardPage() {
 
   //= ========= VIEW ==========
   if (onboardingComplete) {
-    return <Redirect href="/(chats)" />
+    return <Redirect href="/chat" />
   }
 
   return (
