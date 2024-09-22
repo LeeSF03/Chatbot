@@ -1,11 +1,12 @@
 import { db, conversationSchema } from '@/db'
+import { eq } from 'drizzle-orm'
 
 export const createConversation = async (
   title: string,
   createdAt?: number,
   updatedAt?: number
 ) => {
-  const data = await db
+  return db
     .insert(conversationSchema)
     .values({
       title,
@@ -14,6 +15,12 @@ export const createConversation = async (
     })
     .returning()
     .execute()
+}
 
-  return data
+export const deleteConversation = async (id: number) => {
+  return db
+    .delete(conversationSchema)
+    .where(eq(conversationSchema.id, id))
+    .returning()
+    .execute()
 }

@@ -1,4 +1,4 @@
-export * from './svgs'
+// export * from './svgs'
 export * from './navigation'
 
 export * from './ChtSafeAreaView'
