@@ -26,6 +26,37 @@
    yarn start
    ```
 
+## SQLite Migrations Steps
+
+Note: the following steps is needed to run SQLite migrations is due to the following issue: https://github.com/drizzle-team/drizzle-orm/issues/2384#issuecomment-2139478294
+
+1. add your schema to ./db/schema.ts
+
+2. stop your development server
+   focus on the terminal running the development server and run:
+
+   ```bash
+   Ctrl + c
+   ```
+
+3. run migration
+
+   ```bash
+   yarn migrate
+   ```
+
+4. start development server
+
+   ```bash
+   yarn start
+   ```
+
+5. open drizzle studio
+   Open devtools menu from the terminal with "start" process and choose expo-drizzle-studio-plugin
+   ```bash
+   Shift + m
+   ```
+
 In the output, you'll find options to open the app in a
 
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)

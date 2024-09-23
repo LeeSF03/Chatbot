@@ -53,6 +53,7 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'no-shadow': 'off',
     'react/function-component-definition': 'off',
+    radix: 'off',
   },
   overrides: [
     {

@@ -16,14 +16,16 @@ import { useColorScheme } from '@/hooks/useColorScheme'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator'
-import { db } from '@/db'
+import { db, expo } from '@/db'
 import migrations from '@/drizzle/migrations'
+import { useDrizzleStudio } from 'expo-drizzle-studio-plugin'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
   //= ========= HOOKS ==========
+  useDrizzleStudio(expo)
   const colorScheme = useColorScheme()
   // const initialTheme = useThemeStore((state) => state.theme)
   // useInitialTheme('light')

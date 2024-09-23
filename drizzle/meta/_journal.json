@@ -15,6 +15,13 @@
       "when": 1726473131157,
       "tag": "0001_calm_magik",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1727104065102,
+      "tag": "0002_sloppy_sebastian_shaw",
+      "breakpoints": true
     }
   ]
 }
