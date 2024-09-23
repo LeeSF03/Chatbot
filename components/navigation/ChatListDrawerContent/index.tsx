@@ -112,9 +112,6 @@ export function ChatListDrawerContent({ ...restProps }: Props) {
                           : '#D896FF',
                     },
               ]}
-              onPress={() => {
-                handleConversationItemPress(conversation)
-              }}
               android_ripple={{
                 color:
                   conversation?.id === selectedConversation?.id
@@ -122,7 +119,12 @@ export function ChatListDrawerContent({ ...restProps }: Props) {
                     : '#EFBBFF',
               }}
             >
-              <Text style={styles.conversationItemLabel}>
+              <Text
+                style={styles.conversationItemLabel}
+                onPress={() => {
+                  handleConversationItemPress(conversation)
+                }}
+              >
                 {conversation.title}
               </Text>
               {/* have to wrap the dropdown in view, otherwise the press colorchange of the view parent can only happen once for some reason */}

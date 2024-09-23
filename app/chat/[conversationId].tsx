@@ -1,17 +1,20 @@
 import { View, Image, FlatList, Pressable, Keyboard } from 'react-native'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 import { ChtMessageBubble, ChtTextInput } from '@/components'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ChatRobot from '@/assets/images/chat/chat-robot.png'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useKeyboardGradualHeightAnimation } from '@/hooks'
 import Animated from 'react-native-reanimated'
 import { ChtSpacer } from '@/components/ChtSpacer'
 import Ionicons from '@expo/vector-icons/Ionicons'
-import { hexColorOnInteract } from '@/helpers'
+import { hexColorOnInteract, createMessage } from '@/helpers'
 import { Controller, useForm } from 'react-hook-form'
 import { useNewChatModalStore } from '@/stores'
 import { useLocalSearchParams } from 'expo-router'
+import { useLiveQuery } from 'drizzle-orm/expo-sqlite'
+import { db, messageSchema } from '@/db'
+import { eq } from 'drizzle-orm'
 
 type ChatSectionProps = {
   type?: 'sent' | 'received'
@@ -79,6 +82,8 @@ type Message = {
   id: number
   message: string
   type: 'sent' | 'received'
+  createdAt: number
+  conversationId: number
 }
 
 const ChatScreen = () => {
@@ -86,44 +91,39 @@ const ChatScreen = () => {
   const { conversationId } = useLocalSearchParams<{ conversationId: string }>()
   const { styles } = useStyles(chatScreenStyleSheets)
   const { animatedStyle } = useKeyboardGradualHeightAnimation()
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: 0,
-      message: `this is chat id ${conversationId}`,
-      type: 'sent',
-    },
-  ])
   const { isOpen } = useNewChatModalStore(({ isOpen }) => ({ isOpen }))
-  const { control, handleSubmit } = useForm({
+  const { data } = useLiveQuery(
+    db
+      .select()
+      .from(messageSchema)
+      .where(eq(messageSchema.conversationId, parseInt(conversationId)))
+      .orderBy(messageSchema.createdAt),
+    [conversationId]
+  )
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       message: '',
     },
   })
 
-  // TODO: delete later
-  const demoMessages: Message[] = useMemo(
-    () => [
-      {
-        id: 0,
-        message: `this is chat id ${conversationId}`,
-        type: 'sent',
-      },
-    ],
-    [conversationId]
-  )
+  //========== STATES ==========
+  const [messages, setMessages] = useState<Message[]>(data as Message[])
 
   //========== FUNCTIONS ==========
-  const onSendMessage = (data: { message: string }) => {
+  const onSendMessage = async (data: { message: string }) => {
     Keyboard.dismiss()
-    setMessages((prevMessages) => [
-      ...prevMessages,
-      {
-        id: messages.length,
-        message: data.message,
-        type: 'sent',
-      },
-    ])
+    const messages = (await createMessage(
+      data.message,
+      parseInt(conversationId)
+    )) as Message[]
+    setMessages((prevMessages) => [...prevMessages, ...messages])
+    reset()
   }
+
+  //========== EFFECTS ==========
+  useEffect(() => {
+    setMessages(data as Message[])
+  }, [data])
 
   return (
     <SafeAreaView style={styles.container}>
