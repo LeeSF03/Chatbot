@@ -57,7 +57,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['babel.config.js', 'metro.config.js', 'jest.config.js'],
+      files: ['*.config.js'],
       rules: {
         '@typescript-eslint/no-require-imports': 'off',
         'func-names': 'off',
