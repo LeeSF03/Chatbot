@@ -45,13 +45,15 @@ Note: the following steps is needed to run SQLite migrations is due to the follo
    yarn migrate
    ```
 
-4. start development server
+4. remove the comments in the sql migration file
+
+5. start development server
 
    ```bash
    yarn start
    ```
 
-5. open drizzle studio
+6. open drizzle studio
    Open devtools menu from the terminal with "start" process and choose expo-drizzle-studio-plugin
    ```bash
    Shift + m
