@@ -1,7 +1,18 @@
-import { View, Image, FlatList, Pressable, Keyboard } from 'react-native'
+import {
+  View,
+  Image,
+  FlatList,
+  Pressable,
+  Keyboard,
+  ActivityIndicator,
+} from 'react-native'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
-import { ChtMessageBubble, ChtTextInput } from '@/components'
-import { useEffect, useMemo, useState } from 'react'
+import {
+  ChtMessageBubble,
+  ChtTextInput,
+  ChtMessageBubbleProps,
+} from '@/components'
+import { useEffect, useState } from 'react'
 import ChatRobot from '@/assets/images/chat/chat-robot.png'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useKeyboardGradualHeightAnimation } from '@/hooks'
@@ -15,26 +26,19 @@ import { useLocalSearchParams } from 'expo-router'
 import { useLiveQuery } from 'drizzle-orm/expo-sqlite'
 import { db, messageSchema } from '@/db'
 import { eq } from 'drizzle-orm'
+import { useMutation } from '@tanstack/react-query'
 
-type ChatSectionProps = {
-  type?: 'sent' | 'received'
-  message: string
-}
-
-function ChatSection({ type = 'sent', message }: ChatSectionProps) {
+function ChatSection({ type = 'sent', message }: ChtMessageBubbleProps) {
   //= ========= HOOKS ==========
   const { styles } = useStyles(chatSectionStyleSheets, {
     type,
   })
 
   //= ========= VARIABLES ==========
-  const RobotProfile = useMemo(
-    () =>
-      type === 'received' ? (
-        <Image source={ChatRobot} style={styles.chatRobotImage} />
-      ) : null,
-    [type]
-  )
+  const RobotProfile =
+    type === 'received' ? (
+      <Image source={ChatRobot} style={styles.chatRobotImage} />
+    ) : null
 
   return (
     <View style={styles.container}>
@@ -78,13 +82,17 @@ const chatSectionStyleSheets = createStyleSheet((theme) => ({
   },
 }))
 
-type Message = {
+type Message = ChtMessageBubbleProps & {
   id: number
-  message: string
-  type: 'sent' | 'received'
   createdAt: number
   conversationId: number
 }
+
+type MessageSend = {
+  message: string
+}
+
+type OllamaResponse = { context: number[]; response: string; done: boolean }
 
 const ChatScreen = () => {
   //========== HOOKS ==========
@@ -100,9 +108,33 @@ const ChatScreen = () => {
       .orderBy(messageSchema.createdAt),
     [conversationId]
   )
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, reset } = useForm<MessageSend>({
     defaultValues: {
       message: '',
+    },
+  })
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: async (data: MessageSend) => {
+      // console.log('getting ollama message')
+      let json: OllamaResponse | null = null
+
+      const res = await fetch('http://10.0.2.2:11434/api/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'llama3.1:8b',
+          prompt: data.message,
+          stream: false,
+        }),
+      }).catch((err) => console.error(err))
+
+      if (!res) return json
+
+      json = await res.json()
+
+      return json
     },
   })
 
@@ -110,14 +142,44 @@ const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>(data as Message[])
 
   //========== FUNCTIONS ==========
-  const onSendMessage = async (data: { message: string }) => {
+  const onSendMessage = async (data: MessageSend) => {
     Keyboard.dismiss()
     const messages = (await createMessage(
       data.message,
       parseInt(conversationId)
     )) as Message[]
-    setMessages((prevMessages) => [...prevMessages, ...messages])
+
     reset()
+
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      ...messages,
+      {
+        message: <ActivityIndicator />,
+        type: 'received',
+        createdAt: Date.now(),
+        conversationId: parseInt(conversationId),
+        id: -1,
+      },
+    ])
+
+    const res = await mutateAsync(data)
+    if (!res) {
+      console.error('Failed to get ollama message')
+      return
+    }
+
+    const ollamaMessage = res.response
+    const ollamaMessages = (await createMessage(
+      ollamaMessage,
+      parseInt(conversationId),
+      'received'
+    )) as Message[]
+
+    setMessages((prevMessages) => {
+      prevMessages.pop() // remove the loading indicator
+      return [...prevMessages, ...ollamaMessages]
+    })
   }
 
   //========== EFFECTS ==========
@@ -136,30 +198,34 @@ const ChatScreen = () => {
         ListHeaderComponent={<ChtSpacer />}
         style={styles.chatContainer}
       />
-      <View style={styles.textInputContainer}>
-        <Controller
-          name="message"
-          control={control}
-          rules={{ required: true }}
-          render={({ field: { onChange, onBlur, ...rest } }) => (
+      <Controller
+        name="message"
+        control={control}
+        rules={{ required: true }}
+        render={({ field: { onChange, onBlur, value, ...rest } }) => (
+          <View style={styles.textInputContainer}>
             <ChtTextInput
               style={styles.textInput}
               onChangeText={onChange}
               onSubmitEditing={handleSubmit(onSendMessage)}
+              value={value}
               {...rest}
             />
-          )}
-        />
-        <Pressable onPress={handleSubmit(onSendMessage)}>
-          {({ pressed }) => (
-            <Ionicons
-              name="send-sharp"
-              size={24}
-              style={styles.sendIcon(pressed)}
-            />
-          )}
-        </Pressable>
-      </View>
+            <Pressable
+              onPress={handleSubmit(onSendMessage)}
+              disabled={isPending || !value}
+            >
+              {({ pressed }) => (
+                <Ionicons
+                  name="send-sharp"
+                  size={24}
+                  style={styles.sendIcon(pressed)}
+                />
+              )}
+            </Pressable>
+          </View>
+        )}
+      />
       {!isOpen && <Animated.View style={animatedStyle} />}
     </SafeAreaView>
   )
