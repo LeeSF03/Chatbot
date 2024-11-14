@@ -3,6 +3,8 @@ import React, { memo } from 'react'
 import { useStyles, createStyleSheet } from 'react-native-unistyles'
 import { Props } from './props'
 
+export { Props as ChtMessageBubbleProps }
+
 export const ChtMessageBubble = memo(
   ({ message, containerProps, messageProps, type = 'sent' }: Props) => {
     //= ========= HOOKS ==========
