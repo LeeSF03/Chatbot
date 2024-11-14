@@ -19,9 +19,13 @@ import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator'
 import { db, expo } from '@/db'
 import migrations from '@/drizzle/migrations'
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import 'text-encoding-polyfill'
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
+
+const queryClient = new QueryClient()
 
 export default function RootLayout() {
   //= ========= HOOKS ==========
@@ -50,11 +54,13 @@ export default function RootLayout() {
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <SafeAreaProvider>
         <KeyboardProvider>
-          <Stack>
-            <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="chat" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
+          <QueryClientProvider client={queryClient}>
+            <Stack>
+              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="chat" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </QueryClientProvider>
         </KeyboardProvider>
       </SafeAreaProvider>
     </ThemeProvider>
