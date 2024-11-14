@@ -1,5 +1,5 @@
 import React from 'react'
-import { StatusBar, Pressable, Text, Button } from 'react-native'
+import { StatusBar, Pressable, Text } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Image } from 'expo-image'
 import { SafeAreaView } from 'react-native-safe-area-context'
