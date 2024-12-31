@@ -31,6 +31,7 @@ export default function RootLayout() {
   //= ========= HOOKS ==========
   useDrizzleStudio(expo)
   const colorScheme = useColorScheme()
+
   // const initialTheme = useThemeStore((state) => state.theme)
   // useInitialTheme('light')
   const [loaded] = useFonts({
